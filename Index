@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <style>
+    :root{--ink:#243047;--blue:#eaf4ff;--pink:#fff0f4;--yellow:#fff8dc;--line:#d8e1ee;--accent:#5576d9}
+    *{box-sizing:border-box} body{margin:0;font-family:Arial,"Noto Sans SC",sans-serif;color:var(--ink);background:linear-gradient(135deg,#f7fbff,#fff8fb);line-height:1.55}
+    .wrap{max-width:1050px;margin:auto;padding:18px}.hero{padding:24px;border-radius:24px;background:linear-gradient(120deg,#e8f3ff,#fff0f4);text-align:center;border:1px solid #e3eaf5}
+    h1{margin:4px 0;font-size:clamp(25px,5vw,38px)} h2{margin-top:0} .rabbit{font-size:44px}
+    .card{background:white;border:1px solid var(--line);border-radius:18px;padding:18px;margin:16px 0;box-shadow:0 5px 20px #344e6810}
+    .row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1;min-width:190px}
+    label{display:block;font-weight:bold;margin:8px 0 4px}input,select,textarea{width:100%;padding:11px;border:1px solid #bdc9da;border-radius:10px;font:inherit;background:white}
+    button,.linkbtn{border:0;border-radius:12px;padding:11px 16px;background:var(--accent);color:white;font:inherit;font-weight:bold;cursor:pointer;display:inline-block;text-decoration:none;margin:5px 5px 5px 0}
+    button.secondary,.linkbtn.secondary{background:#e9eefb;color:#2f447d}button:disabled{opacity:.5;cursor:not-allowed}
+    .hidden{display:none!important}.muted{color:#68758b;font-size:.92rem}.pill{display:inline-block;padding:3px 9px;border-radius:999px;background:#eef2ff;font-size:.85rem}
+    .lesson{font-size:20px;line-height:2.05;white-space:pre-line;background:#fffdf5;padding:16px;border-radius:14px;border:1px solid #f0e3ae}
+    .word{display:inline-block;background:#fff0bd;padding:3px 8px;border-radius:8px;margin:3px}
+    .feedback{background:#f2fbf3;border:1px solid #cce9d1;padding:12px;border-radius:12px;margin-top:10px}
+    .notice{padding:10px 12px;border-radius:10px;background:#fff8dc;margin:10px 0}.error{background:#fff0f0;color:#9c2525}.success{background:#effaf1;color:#23632f}
+    .item{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;background:#fff}
+    footer{text-align:center;color:#718096;padding:18px;font-size:.85rem}
+    @media(max-width:600px){.wrap{padding:10px}.card{padding:14px}.lesson{font-size:18px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="rabbit">🐰 📚 🌈</div>
+    <h1>Jom Kenali Emosi!</h1>
+    <div>华文学习小天地 · Unit 16: Saya Tidak Mahu Marah</div>
+    <p class="muted">读课文 · 认识汉字 · 理解内容</p>
+  </header>
+
+  <section id="loginCard" class="card">
+    <h2>登录 / Log Masuk</h2>
+    <div class="row">
+      <div><label for="role">身份 / Peranan</label><select id="role"><option value="STUDENT">学生 / Murid</option><option value="TEACHER">教师 / Guru</option></select></div>
+      <div><label for="userId">编号 / ID</label><input id="userId" placeholder="例如 M01 或 GURU01" autocomplete="username"></div>
+      <div><label for="pin">个人访问码 / Kod Akses</label><input id="pin" type="password" placeholder="输入访问码" autocomplete="current-password"></div>
+    </div>
+    <button onclick="doLogin()">登录 / Log Masuk</button>
+    <div id="loginMsg" class="notice hidden"></div>
+    <p class="muted">教师请使用自己的教师账号。学生只能查看自己的已发布评语。</p>
+  </section>
+
+  <main id="studentApp" class="hidden">
+    <section class="card">
+      <div class="row"><div><h2>你好，<span id="studentName"></span>！</h2><p>今天一起阅读《我不想生气》。🌟</p></div><div style="text-align:right"><button class="secondary" onclick="doLogout()">退出登录</button></div></div>
+    </section>
+    <section class="card">
+      <h2>一、阅读课文</h2>
+      <div class="lesson">二 我不想生气
+
+当我生气的时候，肚子里像有一个火球。我可以好几分钟不停地喊、叫、踢……
+
+我好生气，有人在笑话我！
+
+我好生气，明明不是我的错，为什么怪到我头上？
+
+妈妈说，人人都会生气，不过，当你生气时，最好去找关心你的人，说说你为什么生气。
+
+谢谢妈妈。以后我知道该怎么做了，不再动不动就生气。</div>
+      <p class="muted">课文依据你上传的课本 PDF 转录。标点和换行在网页中作了排版调整。</p>
+      <a class="linkbtn" href="https://www.youtube.com/watch?v=nYVJsi6ftBQ" target="_blank" rel="noopener">▶ 听课文朗读</a>
+    </section>
+    <section class="card">
+      <h2>二、认识汉字与词语</h2>
+      <p>本课生字：</p>
+      <div id="words"></div>
+      <p><b>词语小练习：</b>选择最合适的字填空。</p>
+      <div class="item">
+        <p>1. 火（　）　　2. 大（　）　　3. 关（　）的人</p>
+        <div class="row">
+          <div><label>第 1 题</label><select id="w1"><option value="">请选择</option><option>球</option><option>关</option><option>心</option></select></div>
+          <div><label>第 2 题</label><select id="w2"><option value="">请选择</option><option>火</option><option>家</option><option>生</option></select></div>
+          <div><label>第 3 题</label><select id="w3"><option value="">请选择</option><option>心</option><option>叫</option><option>踢</option></select></div>
+        </div>
+        <button class="secondary" onclick="checkWords()">检查答案</button><span id="wordResult" class="muted"></span>
+      </div>
+      <p class="muted">说明：词语练习为辅助活动；教师可依课堂进度调整。</p>
+    </section>
+    <section class="card">
+      <h2>三、理解课文</h2>
+      <div class="item"><label>1. 主人公生气时，觉得肚子里像有什么？</label><div class="row"><label><input type="radio" name="q1" value="a" style="width:auto"> 一个火球</label><label><input type="radio" name="q1" value="b" style="width:auto"> 一朵白云</label></div></div>
+      <div class="item"><label>2. 妈妈建议主人公生气时怎么做？</label><div class="row"><label><input type="radio" name="q2" value="a" style="width:auto"> 马上大喊大叫</label><label><input type="radio" name="q2" value="b" style="width:auto"> 找关心自己的人，说说为什么生气</label></div></div>
+      <div class="item"><label>3. 读完课文，你认为主人公后来学会了什么？</label><textarea id="q3" rows="2" placeholder="试着用一句话回答……"></textarea></div>
+      <button onclick="checkComprehension()">检查选择题</button><span id="quizResult" class="muted"></span>
+      <p class="muted">正式课堂小测也可使用 <a href="https://www.joinconker.com/nhegyf" target="_blank" rel="noopener">Conker 课文理解测验</a>。</p>
+    </section>
+    <section class="card">
+      <h2>四、课堂活动</h2>
+      <p>和同学讨论：当你觉得生气时，可以怎样用语言表达？</p>
+      <p><span class="word">我觉得……</span><span class="word">因为……</span><span class="word">我可以先……然后……</span></p>
+      <a class="linkbtn secondary" href="https://wordwall.net/resource/122303765?wwmethod=link" target="_blank" rel="noopener">打开 Wordwall 热身活动</a>
+    </section>
+    <section class="card">
+      <h2>五、我的 Exit Ticket 反馈</h2>
+      <p class="muted">录音由教师在课堂统一使用教师电脑完成。学生在这里不能录音，只能查看教师已发布的反馈。</p>
+      <div id="studentFeedback">正在读取反馈……</div>
+    </section>
+  </main>
+
+  <main id="teacherApp" class="hidden">
+    <section class="card">
+      <div class="row"><div><h2>教师管理页面</h2><p>教师可以录制 Exit Ticket、聆听录音并发布表现反馈。</p></div><div style="text-align:right"><button class="secondary" onclick="doLogout()">退出登录</button></div></div>
+    </section>
+    <section class="card">
+      <h2>一、录制学生 Exit Ticket</h2>
+      <label for="recordStudent">学生编号</label>
+      <select id="recordStudent"></select>
+      <p class="muted">建议口头任务：请学生说说主人公为什么生气、妈妈给了什么建议，或用一句话说说自己读懂了什么。录音最长 60 秒。</p>
+      <div class="row">
+        <button id="startRec" onclick="startRecording()">● 开始录音</button>
+        <button id="stopRec" class="secondary" onclick="stopRecording()" disabled>■ 停止录音</button>
+      </div>
+      <p id="recStatus" class="notice">尚未开始录音。</p>
+      <audio id="audioPreview" controls class="hidden" style="width:100%"></audio>
+      <button id="uploadRec" onclick="uploadRecording()" disabled>提交录音</button>
+      <div id="recordMsg" class="notice hidden"></div>
+    </section>
+    <section class="card">
+      <h2>二、录音与表现反馈</h2>
+      <button class="secondary" onclick="loadTeacherRecords()">刷新记录</button>
+      <div id="teacherRecords">正在读取记录……</div>
+    </section>
+  </main>
+  <footer>Jom Kenali Emosi! · Google Apps Script prototype</footer>
+</div>
+
+<script>
+let session = null;
+let mediaRecorder = null;
+let recordedChunks = [];
+let recordedBlob = null;
+let recordStartedAt = 0;
+let autoStopTimer = null;
+
+let recorderWindow = null;
+let recordedDurationSeconds = 0;
+
+// Replace this with your deployed GitHub Pages origin.
+const RECORDER_ORIGIN = 'https://GURU01.github.io';
+
+const lessonWords = ['火','候','钟','喊','叫','踢','怪','过','关','可','笑','最','做'];
+document.getElementById('words').innerHTML = lessonWords.map(w => `<span class="word">${w}</span>`).join('');
+
+function showMsg(id, text, error=false) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.classList.remove('hidden','error','success');
+  el.classList.add(error ? 'error' : 'success');
+}
+function hide(id){document.getElementById(id).classList.add('hidden');}
+
+function doLogin() {
+  const role = document.getElementById('role').value;
+  const id = document.getElementById('userId').value.trim();
+  const pin = document.getElementById('pin').value.trim();
+  const msg = document.getElementById('loginMsg');
+  msg.classList.remove('hidden','error','success');
+  msg.textContent = '正在登录……';
+  google.script.run.withSuccessHandler(result => {
+    session = result;
+    document.getElementById('loginCard').classList.add('hidden');
+    if (result.role === 'STUDENT') {
+      document.getElementById('studentApp').classList.remove('hidden');
+      document.getElementById('studentName').textContent = result.id;
+      loadStudentData();
+    } else {
+      document.getElementById('teacherApp').classList.remove('hidden');
+      populateStudentSelect();
+      loadTeacherRecords();
+    }
+  }).withFailureHandler(err => showMsg('loginMsg', err.message || String(err), true))
+    .login(role, id, pin);
+}
+function doLogout() {
+  const token = session && session.token;
+  if (token) google.script.run.logout(token);
+  session = null;
+  stopTracks();
+  document.getElementById('studentApp').classList.add('hidden');
+  document.getElementById('teacherApp').classList.add('hidden');
+  document.getElementById('loginCard').classList.remove('hidden');
+  document.getElementById('pin').value = '';
+}
+function loadStudentData() {
+  google.script.run.withSuccessHandler(data => {
+    const box = document.getElementById('studentFeedback');
+    if (!data.submissions.length) {
+      box.innerHTML = '<div class="notice">目前还没有录音记录。请在课堂完成 Exit Ticket 后再查看。</div>';
+      return;
+    }
+    box.innerHTML = data.submissions.map(s => {
+      if (s.status !== 'PUBLISHED') return `<div class="item"><b>课堂记录</b><p class="muted">${escapeHtml(String(s.createdAt))}</p><span class="pill">教师评语尚未发布</span></div>`;
+      return `<div class="feedback"><b>表现等级：${escapeHtml(s.feedback.level)}</b><p>${escapeHtml(s.feedback.comment || '教师没有添加文字评语。')}</p><small class="muted">更新：${escapeHtml(String(s.feedback.updatedAt))}</small></div>`;
+    }).join('');
+  }).withFailureHandler(err => {
+    document.getElementById('studentFeedback').textContent = err.message || String(err);
+  }).getStudentData(session.token);
+}
+function checkWords() {
+  const ok = document.getElementById('w1').value === '球' &&
+             document.getElementById('w2').value === '火' &&
+             document.getElementById('w3').value === '心';
+  document.getElementById('wordResult').textContent = ok ? ' ✓ 做得好！' : ' 再读一读词语：火球、大火、关心。';
+}
+function checkComprehension() {
+  let score = 0;
+  if (document.querySelector('input[name="q1"]:checked')?.value === 'a') score++;
+  if (document.querySelector('input[name="q2"]:checked')?.value === 'b') score++;
+  document.getElementById('quizResult').textContent = ` 选择题：答对 ${score}/2。第 3 题请尝试用完整句子回答。`;
+}
+function populateStudentSelect() {
+  const select = document.getElementById('recordStudent');
+  select.innerHTML = '';
+  for (let i=1;i<=20;i++) {
+    const id = 'M' + String(i).padStart(2,'0');
+    const opt = document.createElement('option'); opt.value=id; opt.textContent=id; select.appendChild(opt);
+  }
+}
+/*
+async function startRecording() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    showMsg('recordMsg','此浏览器不支持录音。请使用最新版 Chrome，并通过 HTTPS 打开 Web App。',true); return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    recordedChunks = []; recordedBlob = null;
+    const options = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') ? {mimeType:'audio/webm;codecs=opus'} : {};
+    mediaRecorder = new MediaRecorder(stream, options);
+    mediaRecorder.ondataavailable = e => { if (e.data && e.data.size) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      recordedBlob = new Blob(recordedChunks, {type: mediaRecorder.mimeType || 'audio/webm'});
+      document.getElementById('audioPreview').src = URL.createObjectURL(recordedBlob);
+      document.getElementById('audioPreview').classList.remove('hidden');
+      document.getElementById('uploadRec').disabled = false;
+      document.getElementById('recStatus').textContent = `录音完成：${Math.min(60, Math.round((Date.now()-recordStartedAt)/1000))} 秒。可试听后提交。`;
+      stopTracks();
+    };
+    mediaRecorder.start();
+    recordStartedAt = Date.now();
+    document.getElementById('startRec').disabled = true;
+    document.getElementById('stopRec').disabled = false;
+    document.getElementById('uploadRec').disabled = true;
+    document.getElementById('recStatus').textContent = '正在录音……最多 60 秒。';
+    autoStopTimer = setTimeout(() => { if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording(); }, 60000);
+  } catch (e) {
+    showMsg('recordMsg','无法使用麦克风。请检查浏览器权限。',true);
+  }
+}*/
+
+function startRecording() {
+  if (!session || session.role !== 'TEACHER') {
+    showMsg('recordMsg', 'Sila log masuk sebagai guru.', true);
+    return;
+  }
+
+  const parentOrigin = window.location.origin;
+  const recorderUrl =
+    'https://YOUR-USERNAME.github.io/emotion-recorder/' +
+    '?parentOrigin=' + encodeURIComponent(parentOrigin);
+
+  recorderWindow = window.open(
+    recorderUrl,
+    'JKEAudioRecorder',
+    'width=600,height=650'
+  );
+
+  if (!recorderWindow) {
+    showMsg(
+      'recordMsg',
+      'Tetingkap rakaman disekat. Benarkan pop-up untuk aplikasi ini, kemudian cuba lagi.',
+      true
+    );
+    return;
+  }
+
+  recordedBlob = null;
+  recordedDurationSeconds = 0;
+  document.getElementById('uploadRec').disabled = true;
+  document.getElementById('audioPreview').classList.add('hidden');
+  document.getElementById('recStatus').textContent =
+    'Halaman rakaman dibuka. Mulakan rakaman di tetingkap tersebut.';
+  hide('recordMsg');
+}
+
+function stopRecording() {
+  // Rakaman dikawal melalui tetingkap Recorder.html.
+  // Klik "Hentikan Rakaman" di tetingkap tersebut.
+  if (recorderWindow && !recorderWindow.closed) {
+    recorderWindow.focus();
+  }
+}
+
+/*function stopRecording() {
+  if (autoStopTimer) clearTimeout(autoStopTimer);
+  if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+  document.getElementById('startRec').disabled = false;
+  document.getElementById('stopRec').disabled = true;
+}*/
+
+function stopTracks() {
+  if (mediaRecorder && mediaRecorder.stream) mediaRecorder.stream.getTracks().forEach(t => t.stop());
+}
+async function uploadRecording() {
+  if (!recordedBlob || !session) return;
+  if (recordedBlob.size > 8*1024*1024) { showMsg('recordMsg','录音超过 8 MB，请重新录制较短内容。',true); return; }
+  const studentId = document.getElementById('recordStudent').value;
+  //const duration = Math.max(1, Math.round((Date.now()-recordStartedAt)/1000));
+  const duration = recordedDurationSeconds;
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    document.getElementById('uploadRec').disabled = true;
+    google.script.run.withSuccessHandler(() => {
+      showMsg('recordMsg',`已提交 ${studentId} 的录音。`);
+      recordedBlob = null;
+      document.getElementById('audioPreview').classList.add('hidden');
+      loadTeacherRecords();
+    }).withFailureHandler(err => {
+      document.getElementById('uploadRec').disabled = false;
+      showMsg('recordMsg',err.message || String(err),true);
+    }).submitTeacherExitTicket(session.token, studentId, reader.result, recordedBlob.type, Math.min(60,duration));
+  };
+  reader.readAsDataURL(recordedBlob);
+}
+function loadTeacherRecords() {
+  if (!session || session.role !== 'TEACHER') return;
+  google.script.run.withSuccessHandler(records => {
+    const box = document.getElementById('teacherRecords');
+    if (!records.length) { box.innerHTML = '<p class="muted">还没有录音记录。</p>'; return; }
+    box.innerHTML = records.map(r => `
+      <div class="item">
+        <div class="row"><div><b>${escapeHtml(r.studentId)}</b> <span class="pill">${r.published?'已发布':'草稿 / 未发布'}</span><p class="muted">${escapeHtml(String(r.createdAt))} · ${r.duration} 秒</p></div>
+        <div><button class="secondary" onclick="playAudio('${r.id}','${r.fileId}')">播放录音</button></div></div>
+        <label>表现等级</label>
+        <select id="level_${r.id}">
+          <option value="">请选择</option>
+          ${['Perlu Bimbingan','Sedang Berkembang','Baik','Sangat Baik'].map(x=>`<option ${r.level===x?'selected':''}>${x}</option>`).join('')}
+        </select>
+        <label>教师评语</label><textarea id="comment_${r.id}" rows="2" maxlength="1000" placeholder="填写具体、鼓励性的评语">${escapeHtml(r.comment)}</textarea>
+        <button onclick="saveOne('${r.id}',false)">保存草稿</button>
+        <button class="secondary" onclick="saveOne('${r.id}',true)">发布给学生</button>
+        <div id="status_${r.id}" class="muted"></div>
+        <audio id="audio_${r.id}" controls class="hidden" style="width:100%;margin-top:8px"></audio>
+      </div>`).join('');
+  }).withFailureHandler(err => {
+    document.getElementById('teacherRecords').textContent = err.message || String(err);
+  }).getTeacherData(session.token);
+}
+function playAudio(submissionId, fileId) {
+  google.script.run.withSuccessHandler(dataUrl => {
+    const audio = document.getElementById('audio_'+submissionId);
+    audio.src = dataUrl; audio.classList.remove('hidden'); audio.play();
+  }).withFailureHandler(err => alert(err.message || String(err))).getAudioDataUrl(session.token,fileId);
+}
+function saveOne(id, publish) {
+  const level = document.getElementById('level_'+id).value;
+  const comment = document.getElementById('comment_'+id).value;
+  if (!level) { document.getElementById('status_'+id).textContent = '请先选择表现等级。'; return; }
+  google.script.run.withSuccessHandler(() => {
+    document.getElementById('status_'+id).textContent = publish ? '已发布，学生登录后可查看。' : '草稿已保存。';
+    loadTeacherRecords();
+  }).withFailureHandler(err => {
+    document.getElementById('status_'+id).textContent = err.message || String(err);
+  }).saveFeedback(session.token,id,level,comment,publish);
+}
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+window.addEventListener('message', async event => {
+  // Accept messages only from the expected recorder page and its window.
+  if (event.origin !== RECORDER_ORIGIN) return;
+  if (!recorderWindow || event.source !== recorderWindow) return;
+
+  const message = event.data;
+  if (!message || message.type !== 'JKE_AUDIO_READY') return;
+
+  try {
+    if (typeof message.dataUrl !== 'string' ||
+        !message.dataUrl.startsWith('data:audio/')) {
+      throw new Error('Format rakaman tidak sah.');
+    }
+
+    const response = await fetch(message.dataUrl);
+    const blob = await response.blob();
+
+    if (!blob.size || blob.size > 8 * 1024 * 1024) {
+      throw new Error('Rakaman kosong atau melebihi had 8 MB.');
+    }
+
+    recordedBlob = blob;
+    recordedDurationSeconds = Math.min(
+      60,
+      Math.max(1, Number(message.durationSeconds) || 1)
+    );
+
+    const audio = document.getElementById('audioPreview');
+    audio.src = URL.createObjectURL(recordedBlob);
+    audio.classList.remove('hidden');
+
+    document.getElementById('uploadRec').disabled = false;
+    document.getElementById('recStatus').textContent =
+      `Rakaman diterima (${recordedDurationSeconds} saat). ` +
+      'Dengar dahulu, kemudian klik Hantar Rakaman.';
+    showMsg('recordMsg', 'Rakaman diterima. Belum disimpan ke Google Drive.');
+
+  } catch (error) {
+    recordedBlob = null;
+    document.getElementById('uploadRec').disabled = true;
+    showMsg('recordMsg', error.message || String(error), true);
+  }
+});
+</body>
+</html>
